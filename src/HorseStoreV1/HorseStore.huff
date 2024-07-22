@@ -1,0 +1,15 @@
+// send calldata -> function dispatch -> function
+
+
+// 60008060093d393df3
+
+#define macro MAIN() = takes(0) returns(0) {
+    0x00   // [0]
+    // 0x02   // Top [2,0] Bottom
+
+    calldataload // [calldata]
+
+    // SHR opcode
+    // 0x0102
+    // 1 bytes = 8 bits
+}
