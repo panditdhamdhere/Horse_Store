@@ -1,15 +1,10 @@
 // send calldata -> function dispatch -> function
 
-
-// 60008060093d393df3
+/* interface */
+#define function updateHorseNumber(uint256) nonpayable returns()
+#define function readNumberOfHorses() view returns(uint256)
 
 #define macro MAIN() = takes(0) returns(0) {
-    0x00   // [0]
-    // 0x02   // Top [2,0] Bottom
-
-    calldataload // [calldata (32)]
-     // SHR opcode
-    // 0x0102
     // 1 bytes = 8 bits
 
     // How do I cut down the calldata -> function selector
@@ -20,28 +15,14 @@
     // shr             // [ Function selector ]
     0x00 calldataload 0xE0 shr // [function_selector]
 
-    // Jump -> function data associated with the selector
-    // If the func_selector == updateHorseNumber -> jump to that code 
-    // If the func_selector == readHorseNumber -> jump to that code 
-    // 0xcdfead2e == updateHorseNumber
-    // 0xe026c017 == readNumberOfHorses
-
     // updateHorseNumber selector
-    dup1                   // [function_selector, function_selector]
-    0xcdfead2e             // [0xcdfead2e, function_selector]
-    eq                     // [true_if_func_selector_matches, function_selector]
+    dup1 __FUNC_SIG(updateHorseNumber) eq updatejump jumpi // [] 
 
-    // jump to updateHorseNumber code if true
-    updatejump             // [updateHorseNumberProgramcounter, true/false, function_selector]
-    jumpi                  // [function_selector]
+    // readNumberOfHorses
+     __FUNC_SIG(readNumberOfHorses) eq updatejump jumpi // [] 
 
-    // readNumberOfHorses, 0xe026c017          
-    0xe026c017             // [0xe026c017, function_selector] 
-    eq                     // [true_if_func_selector_matches]
-    readJump               // [readJump, true_if_func_selector_matches]
-    jumpi                  // []
+    0x00 0x00 revert       // []
 
- // 60128060093d393df35f355f3560e01c63cdfead2e14610011575b
   updatejump:
    SET_NUMBER_OF_HORSES()
 
@@ -50,10 +31,6 @@
   
 }
 
-#define macro SET_NUMBER_OF_HORSES() = takes(0) returns(0) {
+#define macro SET_NUMBER_OF_HORSES() = takes(0) returns(0) {}
 
-}
-
-#define macro GET_NUMBER_OF_HORSES() = takes(0) returns(0) {
-
-}
+#define macro GET_NUMBER_OF_HORSES() = takes(0) returns(0) {}
